@@ -4,12 +4,17 @@
 
 ### 1. Metrics
 
-Provide set of metrics based on the four "golden signals" (latency, traffic, errors, saturation). This metrics can be accessed on prometheus installed with helm ([Artifact Hub - Prometheus Chart](https://artifacthub.io/packages/helm/prometheus-community/prometheus)) or with following the Istio and Prometheus integration documentation ([Istio Documentation - Prometheus Integration - Option 1: Quick Start](https://istio.io/latest/docs/ops/integrations/prometheus/#option-1-quick-start)).
+Provide set of metrics based on the four "golden signals" (latency, traffic, errors, saturation). The metrics can be accessed on prometheus installed with [Prometheus Helm chart](https://artifacthub.io/packages/helm/prometheus-community/prometheus) or with following the Istio and Prometheus integration documentation [Istio Documentation - Prometheus Integration - Option 1: Quick Start](https://istio.io/latest/docs/ops/integrations/prometheus/#option-1-quick-start).
 
 Below is an example of Querying on Prometheus to get Istio generated metrics:
-![Image 1 - Querying on Prometheus to get Istio generated metrics.](img/i-3-doc_istio-obervability_0.jpeg)
+![Querying on Prometheus to get Istio generated metrics.](img/i-3-doc_istio-obervability_0.jpeg)
 
 ### 2. Distributed traces
+
+Distributed trace spans for each service, providing operators with a detailed understanding of call flows and service dependencies within a mesh.  Distributed tracer supported: [Zipkin, Jaeger, Lightstep, and Datadog](https://istio.io/latest/docs/concepts/observability/#distributed-traces). Trace can be implemeted on Jaeger with following [Istio Documentation - Jaeger Integration - Option 1: Quick Start](https://istio.io/latest/docs/ops/integrations/jaeger/#option-1-quick-start). Other installation methods such as Helm and other tools like Lightstep have not been tested.
+
+Below is an example of Tracing microservices on Jaeger
+![Tracing microservices on Jaeger](img/i-3-doc_istio-obervability_5.png)
 
 ### 3. Access Logs
 
@@ -41,3 +46,10 @@ Self-monitoring metrics to monitor istio behavior. All Istio service-level metri
 
 * Querying on Prometheus to get a number of success sidecar injection requests.
 ![Querying on Prometheus to get a number of success sidecar injection requests.](img/i-3-doc_istio-obervability_4.jpeg)
+
+## C. Distributed Traces
+
+Distributed Traces provide a way to monitor requests flows lantency/duracy between any microservices dependencies and the app ended the request in Istio service mesh.
+
+* Tracing 1 requests to "productpage" with Jaeger.
+![Tracing 1 request to "productpage" with Jaeger.](img/i-3-doc_istio-obervability_6.png)
