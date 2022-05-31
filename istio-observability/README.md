@@ -69,7 +69,7 @@ Distributed Traces provide a way to monitor requests flows lantency/duracy betwe
 
 ## D. Access Logs
 
-**_(All explanation of this section has [been explained](#3-access-logs))_**
+**_(All explanation of this section [has been explained](#3-access-logs))_**
 
 * Logging access logs on envoy proxy at "productpage" service.
 ![Logging access logs on envoy proxy at "productpage" service](img/i-3-doc_istio-obervability_9.png)
