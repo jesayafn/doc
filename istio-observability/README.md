@@ -11,7 +11,7 @@ Below is an example of Querying on Prometheus to get Istio generated metrics:
 
 ### 2. Distributed traces
 
-Distributed trace spans for each service, providing operators with a detailed understanding of call flows and service dependencies within a mesh.  Distributed tracer supported: [Zipkin, Jaeger, Lightstep, and Datadog](https://istio.io/latest/docs/concepts/observability/#distributed-traces). Trace can be implemeted on Jaeger with following [Istio Documentation - Jaeger Integration - Option 1: Quick Start](https://istio.io/latest/docs/ops/integrations/jaeger/#option-1-quick-start). Other installation methods such as Helm and other tools like Lightstep have not been tested.
+Distributed trace spans for each service, providing operators with a detailed understanding of call flows and service dependencies within a mesh.  Distributed tracer supported: [Zipkin, Jaeger, Lightstep, and Datadog](https://istio.io/latest/docs/concepts/observability/#distributed-traces). Trace can be implemeted on Jaeger with following [Istio Documentation - Jaeger Integration - Option 1: Quick Start](https://istio.io/latest/docs/ops/integrations/jaeger/#option-1-quick-start) and [Istio Documentation - Zipkin Integration - Option 1: Quick Start.](https://istio.io/latest/docs/ops/integrations/zipkin/#option-1-quick-start) Other installation methods such as Helm and other tools like Lightstep have not been tested.
 
 Below is an example of Tracing microservices on Jaeger
 ![Tracing microservices on Jaeger](img/i-3-doc_istio-obervability_5.png)
@@ -20,7 +20,7 @@ Below is an example of Tracing microservices on Jaeger
 
 ## B. Metrics
 
-Istio generate 3 levels of metrics type:
+Istio generate 3 type metrics:
 
 ### 1. Proxy-level metrics
 
@@ -51,5 +51,13 @@ Self-monitoring metrics to monitor istio behavior. All Istio service-level metri
 
 Distributed Traces provide a way to monitor requests flows lantency/duracy between any microservices dependencies and the app ended the request in Istio service mesh.
 
-* Tracing 1 requests to "productpage" with Jaeger.
+* Tracing 1 request to "productpage" with Jaeger.
 ![Tracing 1 request to "productpage" with Jaeger.](img/i-3-doc_istio-obervability_6.png)
+
+    > Note: On the image, Jaeger using Zipkin API. See [Jaeger Integration - Option 1: Quick Start on Istio Documentation](https://istio.io/latest/docs/ops/integrations/jaeger/#option-1-quick-start) and [Kubernetes file used](https://raw.githubusercontent.com/istio/istio/release-1.13/samples/addons/jaeger.yaml)
+
+* Tracing 1 request to "productpage" with Zipkin.
+![Tracing 1 request to "productpage" with Zipkin.](img/i-3-doc_istio-obervability_7.png)
+
+* Tracing "productpage" dependencies with Zipkin.
+![Tracing "productpage" dependencies with Zipkin.](img/i-3-doc_istio-obervability_8.png)
