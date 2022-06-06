@@ -4,14 +4,14 @@
 
 ### 1. Metrics
 
-Provide set of metrics based on the four "golden signals" (latency, traffic, errors, saturation). The metrics can be accessed on [Prometheus](https://istio.io/latest/about/faq/#metrics-and-logs) installed with [Prometheus Helm chart](https://artifacthub.io/packages/helm/prometheus-community/prometheus) or with following the Istio and Prometheus integration documentation [Istio Documentation - Prometheus Integration - Option 1: Quick Start](https://istio.io/latest/docs/ops/integrations/prometheus/#option-1-quick-start).
+Provide set of metrics based on the four "golden signals" (latency, traffic, errors, saturation).
 
 Below is an example of Querying on Prometheus to get Istio generated metrics:
 ![Querying on Prometheus to get Istio generated metrics.](img/i-3-doc_istio-obervability_0.jpeg)
 
 ### 2. Distributed traces
 
-Distributed trace spans for each service, providing operators with a detailed understanding of call flows and service dependencies within a mesh.  Distributed tracer supported: [Zipkin, Jaeger, Lightstep, and Datadog](https://istio.io/latest/docs/concepts/observability/#distributed-traces). 
+Distributed trace spans for each service, providing operators with a detailed understanding of call flows and service dependencies within a mesh.  Distributed tracer supported: [Zipkin, Jaeger, Lightstep, and Datadog](https://istio.io/latest/docs/concepts/observability/#distributed-traces).
 
 Below is an example of Tracing microservices on Jaeger:
 ![Tracing microservices on Jaeger](img/i-3-doc_istio-obervability_5.png)
@@ -92,6 +92,8 @@ Self-monitoring metrics to monitor istio behavior. All Istio service-level metri
 
 ## C. Distributed Traces
 
+### Distributed Traces Overview
+
 Distributed Traces provide a way to monitor requests flows lantency/duracy between any microservices dependencies and the app ended the request in Istio service mesh.
 
 * Tracing 1 request to "productpage" with Jaeger.
@@ -104,6 +106,134 @@ Distributed Traces provide a way to monitor requests flows lantency/duracy betwe
 
 * Tracing "productpage" dependencies with Zipkin.
 ![Tracing "productpage" dependencies with Zipkin.](img/i-3-doc_istio-obervability_8.png)
+
+### Installing Jaeger
+
+1. **Apply Quick Start Jaeger Deployment for Istio**
+
+    ```bash
+    kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.14/samples/addons/jaeger.yaml
+    ```
+
+1. **Expose Jaeger with Istio Gateway**
+
+    ```bash
+    vi tracing-gateway.yaml
+    ```
+
+    ```yaml
+    apiVersion: networking.istio.io/v1alpha3
+    kind: Gateway
+    metadata:
+    name: tracing-gateway
+    namespace: istio-system
+    spec:
+    selector:
+        istio: ingress
+    servers:
+    - port:
+        number: 80
+        name: http-tracing
+        protocol: HTTP
+        hosts:
+        - "[FQDN]"
+    ---
+    apiVersion: networking.istio.io/v1alpha3
+    kind: VirtualService
+    metadata:
+    name: tracing-vs
+    namespace: istio-system
+    spec:
+    hosts:
+    - "[FQDN]"
+    gateways:
+    - tracing-gateway
+    http:
+    - route:
+        - destination:
+            host: tracing
+            port:
+            number: 80
+    ---
+    apiVersion: networking.istio.io/v1alpha3
+    kind: DestinationRule
+    metadata:
+    name: tracing
+    namespace: istio-system
+    spec:
+    host: tracing
+    trafficPolicy:
+        tls:
+        mode: DISABLE
+    ```
+
+    ```bash
+    kubectl apply -f tracing-gateway.yaml
+    ```
+
+### Installing Zipkin
+
+1. **Apply Quick Start Zipkin Deployment for Istio**
+
+    ```bash
+    kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.14/samples/addons/extras/zipkin.yaml
+    ```
+
+1. **Expose Zipkin with Istio Gateway**
+
+    ```bash
+    vi tracing-gateway.yaml
+    ```
+
+    ```yaml
+    apiVersion: networking.istio.io/v1alpha3
+    kind: Gateway
+    metadata:
+    name: tracing-gateway
+    namespace: istio-system
+    spec:
+    selector:
+        istio: ingress
+    servers:
+    - port:
+        number: 80
+        name: http-tracing
+        protocol: HTTP
+        hosts:
+        - "[FQDN]"
+    ---
+    apiVersion: networking.istio.io/v1alpha3
+    kind: VirtualService
+    metadata:
+    name: tracing-vs
+    namespace: istio-system
+    spec:
+    hosts:
+    - "[FQDN]"
+    gateways:
+    - tracing-gateway
+    http:
+    - route:
+        - destination:
+            host: tracing
+            port:
+            number: 80
+    ---
+    apiVersion: networking.istio.io/v1alpha3
+    kind: DestinationRule
+    metadata:
+    name: tracing
+    namespace: istio-system
+    spec:
+    host: tracing
+    trafficPolicy:
+        tls:
+        mode: DISABLE
+    ```
+
+    ```bash
+    kubectl apply -f tracing-gateway.yaml
+    ```
 
 ## D. Access Logs
 
@@ -149,7 +279,6 @@ Distributed Traces provide a way to monitor requests flows lantency/duracy betwe
     curl [service-istio-injected]
     kubectl get log -l [pod-label] -c envoy-proxy -n [istio-injected-namespace]
     ```
-
 
 ## C. Appendix
 
