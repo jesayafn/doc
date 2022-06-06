@@ -284,8 +284,11 @@ Distributed Traces provide a way to monitor requests flows lantency/duracy betwe
 
 1. [ArtifactHub - prometheus-community/prometheus.](https://artifacthub.io/packages/helm/prometheus-community/prometheus)
 1. [Helm Documentation - Installing Helm.](https://helm.sh/docs/intro/install/)
+1. [Istio Documentation - Bookinfo Application](https://istio.io/latest/docs/examples/bookinfo)
 1. [Istio Documentation - Envoy Access Logs.](https://istio.io/latest/docs/tasks/observability/logs/access-log)
+1. [Istio Documentation - Installing Guide](https://istio.io/latest/docs/setup/install)
 1. [Istio Documentation - Jaeger Integration.](https://istio.io/latest/docs/ops/integrations/jaeger)
 1. [Istio Documentation - Observability.](https://istio.io/latest/docs/concepts/observability)
 1. [Istio Documentation - Prometheus Integration.](https://istio.io/latest/docs/ops/integrations/prometheus)
+1. [Istio Documentation - Querying Metrics from Prometheus](https://istio.io/latest/docs/tasks/observability/metrics/querying-metrics)
 1. [Istio Documentation - Zipkin Integration.](https://istio.io/latest/docs/ops/integrations/zipkin)
