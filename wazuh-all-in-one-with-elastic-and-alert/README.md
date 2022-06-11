@@ -6,6 +6,7 @@
 
 1. Elasticsearch
 1. Filebeat
+1. Wazuh module for Filebeat
 1. Wazuh Manager
 1. Kibana
 1. Wazuh plugin for Kibana
@@ -25,9 +26,7 @@ Components number 1-5 will be installed on 1 node as a wazuh server and componen
 
 > **⚠️ Attention: All commands run with privileges.⚠️**
 >
-> Run `sudo -i` before run any steps in this section:
->
-> To exit from `sudo -i` session, please run `exit` command or Ctrl+D
+> Run `sudo -i` before run any steps in this section and for exit from `sudo -i` session, run `exit` command or Ctrl+D
 
 #### 1. Add Wazuh and Elastic Stack repository.
 
@@ -240,3 +239,99 @@ Components number 1-5 will be installed on 1 node as a wazuh server and componen
       talk to server... OK
       version: 7.17.4
     ```
+
+#### 5. Setup Kibana
+
+1. Install Kibana
+
+    ```bash
+    apt install kibana=7.17.4
+    ```
+
+1. Configure self-signed certificates for Kibana
+
+    ```bash
+    mkdir /etc/kibana/certs/ca -p
+    cp -R /etc/elasticsearch/certs/ca/ /etc/kibana/certs/
+    cp /etc/elasticsearch/certs/elasticsearch.key /etc/kibana/certs/kibana.key
+    cp /etc/elasticsearch/certs/elasticsearch.crt /etc/kibana/certs/kibana.crt
+    chown -R kibana:kibana /etc/kibana/
+    chmod -R 500 /etc/kibana/certs
+    chmod 440 /etc/kibana/certs/ca/ca.* /etc/kibana/certs/kibana.*
+    ```
+
+1. Configure Kibana
+
+    ```bash
+    vi /etc/kibana/kibana.yml
+    ```
+
+    ```yaml
+    server.host: [node-IP-address]
+    server.port: [kibana-port]
+    elasticsearch.hosts: https://[node-IP-address]:[elasticsearch-port]
+    elasticsearch.password: [elasticsearch-password]
+
+    # Elasticsearch from/to Kibana
+
+    elasticsearch.ssl.certificateAuthorities: /etc/kibana/certs/ca/ca.crt
+    elasticsearch.ssl.certificate: /etc/kibana/certs/kibana.crt
+    elasticsearch.ssl.key: /etc/kibana/certs/kibana.key
+
+    # Browser from/to Kibana
+    server.ssl.enabled: true
+    server.ssl.certificate: /etc/kibana/certs/kibana.crt
+    server.ssl.key: /etc/kibana/certs/kibana.key
+
+    # Elasticsearch authentication
+    xpack.security.enabled: true
+    elasticsearch.username: elastic
+    uiSettings.overrides.defaultRoute: "/app/wazuh"
+    elasticsearch.ssl.verificationMode: certificate
+    telemetry.banner: false
+    ```
+
+    ```bash
+    mkdir /usr/share/kibana/data
+    chown -R kibana:kibana /usr/share/kibana
+    ```
+
+    > **⚠️ Attention ⚠️**
+    >
+    > The following command will needed only if you are using a [privileged ports or well-known ports (0-1023)](https://superuser.com/questions/710253/allow-non-root-process-to-bind-to-port-80-and-443) for Kibana service
+
+    ```bash
+    setcap 'cap_net_bind_service=+ep' /usr/share/kibana/node/bin/node
+    ```
+
+1. Configure Wazuh plugin for Kibana
+
+    ```bash
+    cd /usr/share/kibana
+    sudo -u kibana /usr/share/kibana/bin/kibana-plugin install https://packages.wazuh.com/4.x/ui/kibana/wazuh_kibana-4.3.4_7.17.4-1.zip
+    ```
+
+1. Run the Kibana service
+
+    ```bash
+    systemctl daemon-reload
+    systemctl enable kibana
+    systemctl start kibana
+    ```
+
+1. Test the Kibana service
+
+    1. Open any browser and visit `https://[node-IP-address]:[kibana-port]`
+
+    1. Login to the Kibana with credential on below:
+
+        ```info
+        Username: elastic
+        Password: [elasticsearch-password]
+        ```
+
+    1. Kibana will health check itself and make sure every component is  healthy ✔️ like screenshot below:
+
+        ![Healthy Wazuh with Elastic](img/i-3-doc_wazuh-all-in-one-with-elastic-and-alert_1.jpeg)
+
+## C. Appendix
