@@ -14,7 +14,7 @@
 1. Wazuh Agent
 1. Hydra
 
-Components number 1-7 will be installed on 1 node as a wazuh server, component number 8 will be installed on every node needed to monitor, component number 9 will be installed on pentest node. 
+Components number 1-7 will be installed on 1 node as a wazuh server, component number 8 will be installed on every node needed to monitor, component number 9 will be installed on pentest node.
 
 ### High-level architecture
 
@@ -497,7 +497,7 @@ Components number 1-7 will be installed on 1 node as a wazuh server, component n
     Check the receiver email box and email looks like:
     ![Email alert example](img/i-3-doc_wazuh-all-in-one-with-elastic-and-alert_2.jpeg)
 
-## 4. Simulate brute force attacks on installed Wazuh agent node through SSH.
+## 4. Simulate brute force attacks on installed Wazuh agent node through SSH
 
 > **⚠️ Attention: On pentest node⚠️**
 
