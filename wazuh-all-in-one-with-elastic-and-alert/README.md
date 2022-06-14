@@ -486,6 +486,7 @@ Components number 1-5 will be installed on 1 node as a wazuh server and componen
     password: [fill with randomly character until ssh connection is reseted]
     ```
 
-    Check the receiver email box.
+    Check the receiver email box and email looks like:
+    ![Email alert example](img/i-3-doc_wazuh-all-in-one-with-elastic-and-alert_2.jpeg)
 
 ## C. Appendix
