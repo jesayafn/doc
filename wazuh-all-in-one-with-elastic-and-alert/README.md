@@ -10,21 +10,25 @@
 1. Wazuh Manager
 1. Kibana
 1. Wazuh plugin for Kibana
+1. Postfix
 1. Wazuh Agent
+1. Hydra
 
-Components number 1-5 will be installed on 1 node as a wazuh server and component number 6 will be installed on every node needed to monitor
+Components number 1-7 will be installed on 1 node as a wazuh server, component number 8 will be installed on every node needed to monitor, component number 9 will be installed on pentest node. 
 
 ### High-level architecture
 
 ![Wazuh All in One with Elastic high-level architecture](img/i-3-doc_wazuh-all-in-one-with-elastic-and-alert_0.png)
 
-## B. Configurations steps
+## B. Steps
 
 > **ℹ️ Operating system used is Ubuntu-based.**
 
 ### 1. Install Wazuh and Elastic Stack
 
 > **⚠️ Attention: All commands run with privileges.⚠️**
+>
+> **⚠️ Attention: On Elastic and Wazuh node⚠️**
 >
 > Run `sudo -i` before run any steps in this section and for exit from `sudo -i` session, run `exit` command or Ctrl+D
 
@@ -66,7 +70,7 @@ Components number 1-5 will be installed on 1 node as a wazuh server and componen
     instances:
         - name: [node-hostname]
         ip:
-        - [node-IP-address]
+        - [elastic-wazuh-node-ip-address]
     ```
 
     ```bash
@@ -87,7 +91,7 @@ Components number 1-5 will be installed on 1 node as a wazuh server and componen
     ```
 
     ```yaml
-    network.host: [node-IP-address]
+    network.host: [elastic-wazuh-node-ip-address]
     node.name: [hostname]
     cluster.initial_master_nodes: [hostname]
 
@@ -129,7 +133,7 @@ Components number 1-5 will be installed on 1 node as a wazuh server and componen
     Changed password for user elastic
     PASSWORD elastic = [Elastic-password]
     
-    curl -XGET https://[node-IP-address]:9200 -u elastic:[Elastic-password] -k
+    curl -XGET https://[elastic-wazuh-node-ip-address]:9200 -u elastic:[Elastic-password] -k
     ```
 
 #### 3. Setup Wazuh Manager
@@ -164,7 +168,7 @@ Components number 1-5 will be installed on 1 node as a wazuh server and componen
 
     ```yaml
     # Wazuh - Filebeat configuration file
-    output.elasticsearch.hosts: [node-IP-address]:[elasticsearch-port]
+    output.elasticsearch.hosts: [elastic-wazuh-node-ip-address]:[elasticsearch-port]
     output.elasticsearch.password: [Elastic-password]
 
     filebeat.modules:
@@ -224,7 +228,7 @@ Components number 1-5 will be installed on 1 node as a wazuh server and componen
     ```
 
     ```output
-     elasticsearch: https://[node-IP-address]:[elasticsearch-port]...
+     elasticsearch: https://[elastic-wazuh-node-ip-address]:[elasticsearch-port]...
       parse url... OK
       connection...
         parse host... OK
@@ -267,9 +271,9 @@ Components number 1-5 will be installed on 1 node as a wazuh server and componen
     ```
 
     ```yaml
-    server.host: [node-IP-address]
+    server.host: [elastic-wazuh-node-ip-address]
     server.port: [kibana-port]
-    elasticsearch.hosts: https://[node-IP-address]:[elasticsearch-port]
+    elasticsearch.hosts: https://[elastic-wazuh-node-ip-address]:[elasticsearch-port]
     elasticsearch.password: [elasticsearch-password]
 
     # Elasticsearch from/to Kibana
@@ -321,7 +325,7 @@ Components number 1-5 will be installed on 1 node as a wazuh server and componen
 
 1. Test the Kibana service
 
-    1. Open any browser and visit `https://[node-IP-address]:[kibana-port]`
+    1. Open any browser and visit `https://[elastic-wazuh-node-ip-address]:[kibana-port]`
 
     1. Login to the Kibana with credential on below:
 
@@ -334,11 +338,13 @@ Components number 1-5 will be installed on 1 node as a wazuh server and componen
 
         ![Healthy Wazuh with Elastic](img/i-3-doc_wazuh-all-in-one-with-elastic-and-alert_1.jpeg)
 
-### 2 Install Wazuh Agent
+### 2. Install Wazuh Agent
+
+> **⚠️ Attention: On accessible node to access Elastic and Wazuh node⚠️**
 
 1. Generate Wazuh Agent installation command
 
-    1. **Open any browser and visit <https://[node-IP-address>]:[kibana-port]**
+    1. **Open any browser and visit <https://[elastic-wazuh-node-ip-address>]:[kibana-port]**
     1. **Click Three Stripe Icon > Wazuh dropbox > Wazuh > Wazuh dropbox below Elastic logo > Agents > ➕ Deploy new agent above the Agents table**
     1. Choose or fill text field with:
 
@@ -350,7 +356,7 @@ Components number 1-5 will be installed on 1 node as a wazuh server and componen
         Choose the architecture:
         (Only for Debian/Ubuntu)[i386, x86_64, armhf, aarch64]
         Wazuh server address:
-        [node-IP-address]
+        [elastic-wazuh-node-ip-address]
         Assign the agent to a group:
         [default-or/and-other-group(s)]
         ```
@@ -360,25 +366,25 @@ Components number 1-5 will be installed on 1 node as a wazuh server and componen
         Example:
 
         ```bash
-        curl -so wazuh-agent-4.3.4.deb https://packages.wazuh.com/4.x/apt/pool/main/w/wazuh-agent/wazuh-agent_4.3.4-1_armhf.deb && sudo WAZUH_MANAGER=[node-IP-address] WAZUH_AGENT_GROUP=[default-or/and-other-group(s)] dpkg -i ./wazuh-agent-4.3.4.deb
+        curl -so wazuh-agent-4.3.4.deb https://packages.wazuh.com/4.x/apt/pool/main/w/wazuh-agent/wazuh-agent_4.3.4-1_armhf.deb && sudo WAZUH_MANAGER=[elastic-wazuh-node-ip-address] WAZUH_AGENT_GROUP=[default-or/and-other-group(s)] dpkg -i ./wazuh-agent-4.3.4.deb
         ```
 
-    1. Run the command and start the agent
+    1. Run the command and start the agent on node needed to monitor.
 
-        Linux:
+        Example for Linux:
 
         ```bash
-        curl -so wazuh-agent-4.3.4.deb https://packages.wazuh.com/4.x/apt/pool/main/w/wazuh-agent/wazuh-agent_4.3.4-1_amd64.deb && sudo WAZUH_MANAGER=[node-IP-address] WAZUH_AGENT_GROUP=[default-or/and-other-group(s)] dpkg -i ./wazuh-agent-4.3.4.deb
+        curl -so wazuh-agent-4.3.4.deb https://packages.wazuh.com/4.x/apt/pool/main/w/wazuh-agent/wazuh-agent_4.3.4-1_amd64.deb && sudo WAZUH_MANAGER=[elastic-wazuh-node-ip-address] WAZUH_AGENT_GROUP=[default-or/and-other-group(s)] dpkg -i ./wazuh-agent-4.3.4.deb
 
         sudo systemctl daemon-reload
         sudo systemctl enable wazuh-agent
         sudo systemctl start wazuh-agent
         ```
 
-        Windows:
+        Example for Windows:
 
         ```powershell
-        Invoke-WebRequest -Uri https://packages.wazuh.com/4.x/windows/wazuh-agent-4.3.4-1.msi -OutFile ${env:tmp}\wazuh-agent-4.3.4.msi; msiexec.exe /i ${env:tmp}\wazuh-agent-4.3.4.msi /q WAZUH_MANAGER=[node-IP-address] WAZUH_REGISTRATION_SERVER=[node-IP-address] WAZUH_AGENT_GROUP=[default-or/and-other-group(s)]
+        Invoke-WebRequest -Uri https://packages.wazuh.com/4.x/windows/wazuh-agent-4.3.4-1.msi -OutFile ${env:tmp}\wazuh-agent-4.3.4.msi; msiexec.exe /i ${env:tmp}\wazuh-agent-4.3.4.msi /q WAZUH_MANAGER=[elastic-wazuh-node-ip-address] WAZUH_REGISTRATION_SERVER=[elastic-wazuh-node-ip-address] WAZUH_AGENT_GROUP=[default-or/and-other-group(s)]
 
         NET START WazuhSvc
         ```
@@ -387,6 +393,8 @@ Components number 1-5 will be installed on 1 node as a wazuh server and componen
 
 > **⚠️ Attention: All commands run with privileges.⚠️**
 >
+> **⚠️ Attention: On Elastic and Wazuh node⚠️**
+>
 > Run `sudo -i` before run any steps in this section and for exit from `sudo -i` session, run `exit` command or Ctrl+D
 
 #### 1. Configure SMTP Server for Wazuh
@@ -394,7 +402,7 @@ Components number 1-5 will be installed on 1 node as a wazuh server and componen
 1. Install needed packages
 
     ```bash
-    apt-get install postfix mailutils libsasl2-2 ca-certificates libsasl2-modules
+    apt install postfix mailutils libsasl2-2 ca-certificates libsasl2-modules
     ```
 
     Left any configuration in default settings.
@@ -455,7 +463,7 @@ Components number 1-5 will be installed on 1 node as a wazuh server and componen
         <logall>no</logall>
         <logall_json>no</logall_json>
         <email_notification>yes</email_notification>
-        <smtp_server>[node-IP-address]</smtp_server>
+        <smtp_server>[elastic-wazuh-node-ip-address]</smtp_server>
         <email_from>[EMAIL_SENDER]</email_from>
         <email_to>[EMAIL_RECEIVER]</email_to>
         <email_maxperhour>[maximum_email_per_hour]</email_maxperhour>
@@ -488,5 +496,28 @@ Components number 1-5 will be installed on 1 node as a wazuh server and componen
 
     Check the receiver email box and email looks like:
     ![Email alert example](img/i-3-doc_wazuh-all-in-one-with-elastic-and-alert_2.jpeg)
+
+## 4. Simulate brute force attacks on installed Wazuh agent node through SSH.
+
+> **⚠️ Attention: On pentest node⚠️**
+
+1. Setup Hydra and list of passwords file
+
+    ```bash
+    sudo apt install hydra
+
+    curl -So password.txt https://raw.githubusercontent.com/duyet/bruteforce-database/master/1000000-password-seclists.txt
+    ```
+
+2. Launch attack
+
+    ```bash
+    hydra -l [installed-wazuh-agent-username] -P password.txt [installed-wazuh-agent-node-ip-address] ssh
+    ```
+
+3. Check the impact.
+
+    * On mailbox
+    * Security evens on Wazuh plugin on Kibana web-app
 
 ## C. Appendix
