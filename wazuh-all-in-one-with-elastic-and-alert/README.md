@@ -28,7 +28,7 @@ Components number 1-5 will be installed on 1 node as a wazuh server and componen
 >
 > Run `sudo -i` before run any steps in this section and for exit from `sudo -i` session, run `exit` command or Ctrl+D
 
-#### 1. Add Wazuh and Elastic Stack repository.
+#### 1. Add Wazuh and Elastic Stack repository
 
 1. Install prerequisites
 
@@ -333,5 +333,159 @@ Components number 1-5 will be installed on 1 node as a wazuh server and componen
     1. Kibana will health check itself and make sure every component is  healthy ✔️ like screenshot below:
 
         ![Healthy Wazuh with Elastic](img/i-3-doc_wazuh-all-in-one-with-elastic-and-alert_1.jpeg)
+
+### 2 Install Wazuh Agent
+
+1. Generate Wazuh Agent installation command
+
+    1. **Open any browser and visit <https://[node-IP-address>]:[kibana-port]**
+    1. **Click Three Stripe Icon > Wazuh dropbox > Wazuh > Wazuh dropbox below Elastic logo > Agents > ➕ Deploy new agent above the Agents table**
+    1. Choose or fill text field with:
+
+        ```info
+        Choose the Operating system: 
+        [Red Hat/CentOS, Debian/Ubuntu, Windows, Mac OS]
+        Choose the version: 
+        (Only for RedHat/CentOS)[CentOS5, CentOS6 or higher, Red Hat 5, Red Hat 6 or higher]
+        Choose the architecture:
+        (Only for Debian/Ubuntu)[i386, x86_64, armhf, aarch64]
+        Wazuh server address:
+        [node-IP-address]
+        Assign the agent to a group:
+        [default-or/and-other-group(s)]
+        ```
+
+    1. **Copy generated command on "Install and enroll the agent" section**
+
+        Example:
+
+        ```bash
+        curl -so wazuh-agent-4.3.4.deb https://packages.wazuh.com/4.x/apt/pool/main/w/wazuh-agent/wazuh-agent_4.3.4-1_armhf.deb && sudo WAZUH_MANAGER=[node-IP-address] WAZUH_AGENT_GROUP=[default-or/and-other-group(s)] dpkg -i ./wazuh-agent-4.3.4.deb
+        ```
+
+    1. Run the command and start the agent
+
+        Linux:
+
+        ```bash
+        curl -so wazuh-agent-4.3.4.deb https://packages.wazuh.com/4.x/apt/pool/main/w/wazuh-agent/wazuh-agent_4.3.4-1_amd64.deb && sudo WAZUH_MANAGER=[node-IP-address] WAZUH_AGENT_GROUP=[default-or/and-other-group(s)] dpkg -i ./wazuh-agent-4.3.4.deb
+
+        sudo systemctl daemon-reload
+        sudo systemctl enable wazuh-agent
+        sudo systemctl start wazuh-agent
+        ```
+
+        Windows:
+
+        ```powershell
+        Invoke-WebRequest -Uri https://packages.wazuh.com/4.x/windows/wazuh-agent-4.3.4-1.msi -OutFile ${env:tmp}\wazuh-agent-4.3.4.msi; msiexec.exe /i ${env:tmp}\wazuh-agent-4.3.4.msi /q WAZUH_MANAGER=[node-IP-address] WAZUH_REGISTRATION_SERVER=[node-IP-address] WAZUH_AGENT_GROUP=[default-or/and-other-group(s)]
+
+        NET START WazuhSvc
+        ```
+
+### 3. Setup SMTP Server and Alert for Wazuh
+
+> **⚠️ Attention: All commands run with privileges.⚠️**
+>
+> Run `sudo -i` before run any steps in this section and for exit from `sudo -i` session, run `exit` command or Ctrl+D
+
+#### 1. Configure SMTP Server for Wazuh
+
+1. Install needed packages
+
+    ```bash
+    apt-get install postfix mailutils libsasl2-2 ca-certificates libsasl2-modules
+    ```
+
+    Left any configuration in default settings.
+
+1. Configure Postfix
+
+    ```bash
+    vi /etc/postfix/main.cf
+    ```
+
+    ```cf
+    ...output ommited...
+    relayhost = [{SMTP_SERVER}]:587
+    smtp_sasl_auth_enable = yes
+    smtp_sasl_password_maps = hash:/etc/postfix/sasl/sasl_passwd
+    smtp_sasl_security_options = noanonymous
+    smtp_tls_CAfile = /etc/ssl/certs/ca-certificates.crt
+    smtp_use_tls = yes
+    ```
+
+    ```bash
+    vi /etc/postfix/sasl/sasl_passwd
+    ```
+
+    ```passwd
+    [{SMTP_SERVER}]:587 [EMAIL_SENDER]:[PASSWORD]
+    ```
+
+    ```bash
+    postmap /etc/postfix/sasl/sasl_passwd
+    chmod 0400 /etc/postfix/sasl/sasl_passwd
+    chown root:root /etc/postfix/sasl/sasl_passwd.db
+    chmod 0600 /etc/postfix/sasl/sasl_passwd.db
+    ```
+
+1. Reload and test configuration
+
+    ```bash
+    systemctl reload postfix
+
+    echo "Test mail from postfix" | mail -s "Test Postfix" -r "[EMAIL_SENDER]" [EMAIL_RECEIVER]
+    ```
+
+#### 2. Setup email alert
+
+1. Configure Alert on Wazuh
+
+    ```bash
+    vi /var/ossec/etc/ossec.conf
+    ```
+
+    ```conf
+    ...output ommited...
+    <ossec_config>
+    <global>
+        <jsonout_output>yes</jsonout_output>
+        <alerts_log>yes</alerts_log>
+        <logall>no</logall>
+        <logall_json>no</logall_json>
+        <email_notification>yes</email_notification>
+        <smtp_server>[node-IP-address]</smtp_server>
+        <email_from>[EMAIL_SENDER]</email_from>
+        <email_to>[EMAIL_RECEIVER]</email_to>
+        <email_maxperhour>[maximum_email_per_hour]</email_maxperhour>
+        <email_log_source>alerts.log</email_log_source>
+        <agents_disconnection_time>10m</agents_disconnection_time>
+        <agents_disconnection_alert_time>0</agents_disconnection_alert_time>
+    </global>
+
+    <alerts>
+        <log_alert_level>3</log_alert_level>
+        <email_alert_level>[alert_level(1-12)]</email_alert_level>
+    </alerts>
+    ...output ommited...
+    ```
+
+1. Restart Wazuh Manager service
+
+    ```bash
+    systemctl restart wazuh-manager
+    ```
+
+1. Test email alert
+
+    > **⚠️ Attention: Make sure <email_alert_level> on level 10 only to test the Wazuh email alert. Restore to needed configuration if email alert is successfully tested.⚠️**
+
+    ```bash
+    ssh [installed-wazuh-agent-node-username]@[installed-wazuh-agent-node-ip-address]
+    password: [fill with randomly character until ssh connection is reseted]
+    ```
+
+    Check the receiver email box.
 
 ## C. Appendix
