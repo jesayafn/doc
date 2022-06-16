@@ -68,7 +68,7 @@ Components number 1-7 will be installed on 1 node as a wazuh server, component n
 
     ```yaml
     instances:
-        - name: [node-hostname]
+        - name: [elastic-wazuh-node-hostname]
         ip:
         - [elastic-wazuh-node-ip-address]
     ```
@@ -92,8 +92,8 @@ Components number 1-7 will be installed on 1 node as a wazuh server, component n
 
     ```yaml
     network.host: [elastic-wazuh-node-ip-address]
-    node.name: [hostname]
-    cluster.initial_master_nodes: [hostname]
+    node.name: [elastic-wazuh-node-hostname]
+    cluster.initial_master_nodes: [elastic-wazuh-node-hostname]
 
     # Transport layer
     xpack.security.transport.ssl.enabled: true
@@ -521,3 +521,7 @@ Components number 1-7 will be installed on 1 node as a wazuh server, component n
     * Security evens on Wazuh plugin on Kibana web-app
 
 ## C. Appendix
+
+1. [Wazuh Documentation - Configuring email alerts.](https://documentation.wazuh.com/current/user-manual/manager/manual-email-report/index.html)
+1. [Wazuh Documentation - Configuring email alerts: SMTP server with authentication](https://documentation.wazuh.com/current/user-manual/manager/manual-email-report/smtp-authentication.html)
+1. [Wazuh Documentation - Installing Wazuh with Elastic Stack basic license: All-in-one deployment.](https://documentation.wazuh.com/current/deployment-options/elastic-stack/all-in-one-deployment/index.html)
