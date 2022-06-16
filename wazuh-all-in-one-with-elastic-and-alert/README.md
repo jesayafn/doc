@@ -523,5 +523,6 @@ Components number 1-7 will be installed on 1 node as a wazuh server, component n
 ## C. Appendix
 
 1. [Wazuh Documentation - Configuring email alerts.](https://documentation.wazuh.com/current/user-manual/manager/manual-email-report/index.html)
-1. [Wazuh Documentation - Configuring email alerts: SMTP server with authentication](https://documentation.wazuh.com/current/user-manual/manager/manual-email-report/smtp-authentication.html)
+1. [Wazuh Documentation - Configuring email alerts: SMTP server with authentication.](https://documentation.wazuh.com/current/user-manual/manager/manual-email-report/smtp-authentication.html)
 1. [Wazuh Documentation - Installing Wazuh with Elastic Stack basic license: All-in-one deployment.](https://documentation.wazuh.com/current/deployment-options/elastic-stack/all-in-one-deployment/index.html)
+1. [Wazuh Documentation - Local configuration (ossec.conf).](https://documentation.wazuh.com/current/user-manual/reference/ossec-conf/index.html)
