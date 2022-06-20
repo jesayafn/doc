@@ -497,7 +497,7 @@ Components number 1-7 will be installed on 1 node as a wazuh server, component n
     Check the receiver email box and email looks like:
     ![Email alert example](img/i-3-doc_wazuh-all-in-one-with-elastic-and-alert_2.jpeg)
 
-## 4. Simulate brute force attacks on installed Wazuh agent node through SSH
+### 4. Simulate brute force attacks on installed Wazuh agent node through SSH
 
 > **⚠️ Attention: On pentest node⚠️**
 
@@ -520,7 +520,76 @@ Components number 1-7 will be installed on 1 node as a wazuh server, component n
     * On mailbox
     * Security evens on Wazuh plugin on Kibana web-app
 
-## C. Appendix
+## C. Additional Steps
+
+### 1. Enable password authentication on Wazuh agent deployment
+
+> **⚠️ Attention: All commands run with privileges.⚠️**
+>
+> **⚠️ Attention: On Elastic and Wazuh node⚠️**
+>
+> Run `sudo -i` before run any steps in this section and for exit from `sudo -i` session, run `exit` command or Ctrl+D
+
+1. Enable password on Wazuh Manager
+
+    ```bash
+    vi /var/ossec/etc/ossec.conf
+    ```
+
+    ```conf
+    <auth>
+       <disabled>no</disabled>
+       <port>1515</port>
+       <use_source_ip>no</use_source_ip>
+       <purge>yes</purge>
+       <use_password>yes</use_password>
+       ...output ommited...
+       </auth>
+    ```
+
+1. Create and attach password
+
+    ```bash
+    echo "[password]" > /var/ossec/etc/authd.pass
+    chmod 644 /var/ossec/etc/authd.pass
+    chown root:wazuh /var/ossec/etc/authd.pass
+    ```
+
+1. Restart Wazuh Manager
+
+    ```bash
+    systemctl restart wazuh-manager
+    ```
+
+### 2. Authenticate Wazuh Agent deployment
+
+> **⚠️ Attention: All commands run with privileges.⚠️**
+>
+> **⚠️ Attention: On Wazuh Agent node⚠️**
+>
+> Run `sudo -i` before run any steps in this section and for exit from `sudo -i` session, run `exit` command or Ctrl+D
+
+#### 1. Authenticate deployed Wazuh Agent
+
+1. Attach password for Wazuh Agent
+
+   ```bash
+   echo "[password]" > /var/ossec/etc/authd.pass
+   chmod 644 /var/ossec/etc/authd.pass
+   chown root:wazuh /var/ossec/etc/authd.pass
+   ```
+
+1. Restart Wazuh Agent
+
+   ```bash
+   systemctl restart wazuh-agent
+   ```
+
+#### 2. Authenticate when deploying Wazuh Agent
+
+Wazuh will generate command with password. See Documentation on [Steps: Install Wazuh Agent](#2-install-wazuh-agent)
+
+## D. Appendix
 
 1. [Wazuh Documentation - Configuring email alerts.](https://documentation.wazuh.com/current/user-manual/manager/manual-email-report/index.html)
 1. [Wazuh Documentation - Configuring email alerts: SMTP server with authentication.](https://documentation.wazuh.com/current/user-manual/manager/manual-email-report/smtp-authentication.html)
