@@ -566,7 +566,6 @@ Components number 1-7 will be installed on 1 node as a wazuh server, component n
 
 Wazuh will generate command with password. See Documentation on [Steps: Install Wazuh Agent](#2-install-wazuh-agent)
 
-
 ### 3. Alerting with Slack
 
 > **⚠️ Attention: All commands run with privileges.⚠️**
@@ -605,7 +604,7 @@ Wazuh will generate command with password. See Documentation on [Steps: Install 
 
 1. Test configuration
 
-    Do [Step number 3 on Setup email alert](#2-setup-email-alert) 
+    Do [Step number 3 on Setup email alert](#2-setup-email-alert)
 
     Example of Slack alert:
     ![Example of Slack alert](img/i-3-doc_wazuh-all-in-one-with-elastic-and-alert_3.jpeg)
