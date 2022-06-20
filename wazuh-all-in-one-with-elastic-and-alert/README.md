@@ -589,9 +589,52 @@ Components number 1-7 will be installed on 1 node as a wazuh server, component n
 
 Wazuh will generate command with password. See Documentation on [Steps: Install Wazuh Agent](#2-install-wazuh-agent)
 
+
+### 3. Alerting with Slack
+
+> **⚠️ Attention: All commands run with privileges.⚠️**
+>
+> **⚠️ Attention: On Elastic and Wazuh node⚠️**
+>
+> Run `sudo -i` before run any steps in this section and for exit from `sudo -i` session, run `exit` command or Ctrl+D
+
+1. Create a Slack webhook
+
+   See [Slack Documentation - Using Slack: Sending messages using Incoming Webhooks](https://api.slack.com/messaging/webhooks)
+
+1. Configure Wazuh Manager
+
+   ```bash
+   vi /var/ossec/etc/ossec.conf
+   ```
+
+    ```conf
+    <ossec_config>
+    ...output ommited...
+        <integration>
+            <name>slack</name>
+            <hook_url>[slack_webhook]</hook_url>
+            <level>10</level>
+            <alert_format>json</alert_format>
+        </integration>
+    </ossec_config>
+    ```
+
+1. Restart Wazuh Manager service
+
+    ```bash
+    systemctl restart wazuh-manager
+    ```
+
+1. Test configuration
+
+    Do [Step number 3 on Setup email alert](#2-setup-email-alert) 
+
 ## D. Appendix
 
 1. [Wazuh Documentation - Configuring email alerts.](https://documentation.wazuh.com/current/user-manual/manager/manual-email-report/index.html)
 1. [Wazuh Documentation - Configuring email alerts: SMTP server with authentication.](https://documentation.wazuh.com/current/user-manual/manager/manual-email-report/smtp-authentication.html)
 1. [Wazuh Documentation - Installing Wazuh with Elastic Stack basic license: All-in-one deployment.](https://documentation.wazuh.com/current/deployment-options/elastic-stack/all-in-one-deployment/index.html)
 1. [Wazuh Documentation - Local configuration (ossec.conf).](https://documentation.wazuh.com/current/user-manual/reference/ossec-conf/index.html)
+1. [Wazuh Documentation - Slack Integration](https://documentation.wazuh.com/current/proof-of-concept-guide/poc-integrate-slack.html)
+1. [Wazuh Documentation - Wazuh Agent Enrollment: Additional security options - Using password authentication](https://documentation.wazuh.com/current/user-manual/agent-enrollment/security-options/using-password-authentication.html)
