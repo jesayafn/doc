@@ -497,29 +497,6 @@ Components number 1-7 will be installed on 1 node as a wazuh server, component n
     Check the receiver email box and email looks like:
     ![Email alert example](img/i-3-doc_wazuh-all-in-one-with-elastic-and-alert_2.jpeg)
 
-### 4. Simulate brute force attacks on installed Wazuh agent node through SSH
-
-> **⚠️ Attention: On pentest node⚠️**
-
-1. Setup Hydra and list of passwords file
-
-    ```bash
-    sudo apt install hydra
-
-    curl -So password.txt https://raw.githubusercontent.com/duyet/bruteforce-database/master/1000000-password-seclists.txt
-    ```
-
-2. Launch attack
-
-    ```bash
-    hydra -l [installed-wazuh-agent-username] -P password.txt [installed-wazuh-agent-node-ip-address] ssh
-    ```
-
-3. Check the impact.
-
-    * On mailbox
-    * Security evens on Wazuh plugin on Kibana web-app
-
 ## C. Additional Steps
 
 ### 1. Enable password authentication on Wazuh agent deployment
@@ -629,6 +606,35 @@ Wazuh will generate command with password. See Documentation on [Steps: Install 
 1. Test configuration
 
     Do [Step number 3 on Setup email alert](#2-setup-email-alert) 
+
+    Example of Slack alert:
+    ![Example of Slack alert](img/i-3-doc_wazuh-all-in-one-with-elastic-and-alert_3.jpeg)
+
+### 4. Simulate brute force attacks on installed Wazuh agent node through SSH
+
+> **⚠️ Attention: On pentest node⚠️**
+
+1. Setup Hydra and list of passwords file
+
+    ```bash
+    sudo apt install hydra
+
+    curl -So password.txt https://raw.githubusercontent.com/duyet/bruteforce-database/master/1000000-password-seclists.txt
+    ```
+
+2. Launch attack
+
+    ```bash
+    hydra -l [installed-wazuh-agent-username] -P password.txt [installed-wazuh-agent-node-ip-address] ssh
+    ```
+
+3. Check the impact.
+
+    * On mailbox
+      ![Mailbox alerts example](img/i-3-doc_wazuh-all-in-one-with-elastic-and-alert_4.jpeg)
+    * On Slack
+      ![Slack alerts example](img/i-3-doc_wazuh-all-in-one-with-elastic-and-alert_3.jpeg)
+    * Security evens on Wazuh plugin on Kibana web-app
 
 ## D. Appendix
 
