@@ -1,4 +1,4 @@
-# Install Kubernetes on Red Hat Enterprise Linux 8 with kubeadm
+# Install Kubernetes on Red Hat Enterprise Linux 8 with kubeadm and CRI-O container runtime
 
 ## A. Overview
 
