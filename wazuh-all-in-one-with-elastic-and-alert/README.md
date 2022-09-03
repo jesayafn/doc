@@ -18,7 +18,7 @@ Components number 1-7 will be installed on 1 node as a wazuh server, component n
 
 ### High-level architecture
 
-![Wazuh All in One with Elastic high-level architecture](img/i-3-doc_wazuh-all-in-one-with-elastic-and-alert_0.png)
+![Wazuh All in One with Elastic high-level architecture](img/doc_wazuh-all-in-one-with-elastic-and-alert_0.png)
 
 ## B. Steps
 
@@ -336,7 +336,7 @@ Components number 1-7 will be installed on 1 node as a wazuh server, component n
 
     1. Kibana will health check itself and make sure every component is  healthy ✔️ like screenshot below:
 
-        ![Healthy Wazuh with Elastic](img/i-3-doc_wazuh-all-in-one-with-elastic-and-alert_1.jpeg)
+        ![Healthy Wazuh with Elastic](img/doc_wazuh-all-in-one-with-elastic-and-alert_1.jpeg)
 
 ### 2. Install Wazuh Agent
 
@@ -495,7 +495,7 @@ Components number 1-7 will be installed on 1 node as a wazuh server, component n
     ```
 
     Check the receiver email box and email looks like:
-    ![Email alert example](img/i-3-doc_wazuh-all-in-one-with-elastic-and-alert_2.jpeg)
+    ![Email alert example](img/doc_wazuh-all-in-one-with-elastic-and-alert_2.jpeg)
 
 ## C. Additional Steps
 
@@ -607,7 +607,7 @@ Wazuh will generate command with password. See Documentation on [Steps: Install 
     Do [Step number 3 on Setup email alert](#2-setup-email-alert)
 
     Example of Slack alert:
-    ![Example of Slack alert](img/i-3-doc_wazuh-all-in-one-with-elastic-and-alert_3.jpeg)
+    ![Example of Slack alert](img/doc_wazuh-all-in-one-with-elastic-and-alert_3.jpeg)
 
 ### 4. Simulate brute force attacks on installed Wazuh agent node through SSH
 
@@ -630,9 +630,9 @@ Wazuh will generate command with password. See Documentation on [Steps: Install 
 3. Check the impact.
 
     * On mailbox
-      ![Mailbox alerts example](img/i-3-doc_wazuh-all-in-one-with-elastic-and-alert_4.jpeg)
+      ![Mailbox alerts example](img/doc_wazuh-all-in-one-with-elastic-and-alert_4.jpeg)
     * On Slack
-      ![Slack alerts example](img/i-3-doc_wazuh-all-in-one-with-elastic-and-alert_3.jpeg)
+      ![Slack alerts example](img/doc_wazuh-all-in-one-with-elastic-and-alert_3.jpeg)
     * Security evens on Wazuh plugin on Kibana web-app
 
 ## D. Appendix
