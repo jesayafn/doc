@@ -74,7 +74,7 @@ sudo vim /etc/pam.d/sshd
 
 # Standard Un*x authentication.
 #@include common-auth
-auth requisite pam_exec.so quiet expose_authtok log=/var/log/vault-ssh.log /usr/local/bin/vault-ssh-helper -dev -config=/etc/vault-ssh-helper.d/config.hcl
+auth required pam_exec.so quiet expose_authtok log=/var/log/vault-ssh.log /usr/local/bin/vault-ssh-helper -dev -config=/etc/vault-ssh-helper.d/config.hcl
 auth optional pam_unix.so not_set_pass use_first_pass nodelay
 
 ---omitted---
@@ -93,6 +93,7 @@ Add or set the parameters
 KbdInteractiveAuthentication yes
 UsePAM yes
 PasswordAuthentication no
+AuthenticationMethods keyboard-interactive
 ```
 
    > Older version of Ubuntu use **ChallengeResponseAuthentication** instead of **KbdInteractiveAuthentication**.
