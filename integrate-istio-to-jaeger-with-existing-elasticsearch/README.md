@@ -45,7 +45,7 @@ Prerequisites:
     kubectl create configmap jaeger-tls --from-file=trust.store --from-file=[some-ca-certificates-files.crt] -n [jaeger-namespace]
     ```
 
-2. Install Jaeger with Helm
+1. Install Jaeger with Helm
 
    > **⚠️ Attention: On Kubernetes master node or some node for accessing Kubernetes⚠️**
 
@@ -104,7 +104,7 @@ Prerequisites:
    helm install jaeger jaegertracing/jaeger -n [jaeger-namespace] -f [jaeger-chart-values.yaml] --create-namespace
    ```
 
-3. Configure Istio
+1. Configure Istio
 
    > **⚠️ Attention: On Kubernetes master node or some node for accessing Kubernetes⚠️**
 
