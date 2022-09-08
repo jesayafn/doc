@@ -41,11 +41,11 @@ Prerequisites:
     ```bash
     sudo apt install openjdk-11-jre-headless
     mv [some-ca-certificates-files.crt] [some-ca-certificates-files.pem]
-    keytool -import -trustcacerts -keystore trust.store -storepass changeit -alias es-root -file [some-ca-certificates-files.crt]
+    keytool -import -trustcacerts -keystore trust.store -storepass [trust-ca-store-password] -alias es-root -file [some-ca-certificates-files.crt]
     kubectl create configmap jaeger-tls --from-file=trust.store --from-file=[some-ca-certificates-files.crt] -n [jaeger-namespace]
     ```
 
-1. Install Jaeger with Helm
+2. Install Jaeger with Helm
 
    > **⚠️ Attention: On Kubernetes master node or some node for accessing Kubernetes⚠️**
 
@@ -91,7 +91,7 @@ Prerequisites:
    spark:
      enabled: true
      cmdlineParams:
-       java.opts: "-Djavax.net.ssl.trustStore=/tls/trust.store -Djavax.net.ssl.trustStorePassword=PHRGYgrenzgOLLvTzSLf"
+       java.opts: "-Djavax.net.ssl.trustStore=/tls/trust.store -Djavax.net.ssl.trustStorePassword=[trust-ca-store-password]"
      extraConfigmapMounts:
        - name: jaeger-tls
          mountPath: /tls
@@ -104,7 +104,7 @@ Prerequisites:
    helm install jaeger jaegertracing/jaeger -n [jaeger-namespace] -f [jaeger-chart-values.yaml] --create-namespace
    ```
 
-1. Configure Istio
+3. Configure Istio
 
    > **⚠️ Attention: On Kubernetes master node or some node for accessing Kubernetes⚠️**
 
